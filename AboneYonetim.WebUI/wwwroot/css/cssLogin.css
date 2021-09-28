@@ -1,0 +1,93 @@
+﻿/*
+body
+{
+    background-color:azure;
+}
+*/
+input {
+    border-color: #17a2b8 !important;
+}
+
+    input:focus {
+        border-color: #17a2b8 !important;
+    }
+
+.dvSayfaIcerik {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 400px;
+    margin-top:150px;
+}
+
+.dvLogo
+{
+    padding:30px 30px 70px 30px ;
+}
+
+    .dvLogo img {
+        width: auto;
+        max-width: 100%;
+        max-height: 90px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+.dvMiniLogo {
+    /*padding: 30px 30px 70px 30px;*/
+}
+
+    .dvMiniLogo img {
+        width: auto;
+        max-width: 100%;
+        max-height: 45px;
+        display: block;
+       
+    }
+
+.dvMamakLogo {
+    padding: 30px 30px 40px 30px;
+}
+
+    .dvMamakLogo img {
+        width: auto;
+        max-width: 100%;
+        max-height: 150px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+.dvLogin {
+    border: 1px solid #17a2b8;
+    border-radius: 5px;
+    padding: 30px;
+    background-color: #f0ffffa1;
+    box-shadow: -5px 8px 12px #a1c0e087;
+}
+
+.input-group-text {
+    color: #fff;
+    background-color: #17a2b8;
+}
+
+
+.dvLoginButton
+{
+    padding:15px 20px 0px;
+}
+
+button {
+    min-width:80px;
+}
+
+/*.btn-primary {
+    background-color: #251954;
+    border-bottom-color: #1782ac;
+    min-width: 80px;
+}
+
+    .btn-primary:hover, .btn-primary:focus, .btn-primary:active
+    {
+        background-color:#1782ac;
+    }*/

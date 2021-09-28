@@ -1,0 +1,266 @@
+﻿@model KULLANICI
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Kullanıcılar</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Kullanıcı</a></li>
+                    <li class="breadcrumb-item active">Index</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- /.card -->
+                <div class="card">
+                    <div class="card-header">
+                        <a class="card-title btn btn-primary mr-2" href="/Admin/Kullanici/Ekle"><i class="fas fa-plus"></i> Kullanıcı Ekle </a>
+                        <a class="card-title btn btn-warning mr-2" type="button" data-toggle="modal" data-target="#exampleModal" id="btnDuzenle"><i class="fas fa-minus"></i> Kullanıcı Düzenle </a>
+                        <a class="card-title btn btn-danger mr-2" type="button" id="btnSil"><i class="fas fa-minus"></i> Kullanıcı Sil </a>
+                    </div>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped" data-search="true" data-search-align="left" data-toggle="table" data-pagination="false" data-sortable="true"
+                               data-single-select="true" data-click-to-select="true" data-sort-class="table-active" data-buttons-class="info">
+                            <thead>
+                                <tr>
+                                    <th data-field="durum" data-checkbox="true"></th>
+                                    <th data-field="KullaniciRol.RolAd">abone kişi</th>
+                                    <th data-field="TcNo">Tc No</th>
+                                    <th data-field="AdSoyad">Ad Soyad</th>
+                                    <th data-field="Eposta">e posta</th>
+                                    <th data-field="GsmNo">Gsm No</th>
+                                    <th data-field="Kulad">Kul ad</th>
+                                    <th data-field="Sifre">Sifre</th>
+                                    @*<th>işlemler</th>*@
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Kullanıcı Düzenle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formDuzenleKisi">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ObjectID" />
+                    <input type="hidden" asp-for="RolID" />
+                    <div class="form-group">
+                        <label asp-for="KullaniciRol.RolAd" class="control-label"></label>
+                        <input id="RolAd" asp-for="KullaniciRol.RolAd" class="form-control" readonly/>
+                        <span asp-validation-for="KullaniciRol.RolAd" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TcNo" class="control-label"></label>
+                        <input asp-for="TcNo" class="form-control" />
+                        <span asp-validation-for="TcNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="AdSoyad" class="control-label"></label>
+                        <input asp-for="AdSoyad" class="form-control" />
+                        <span asp-validation-for="AdSoyad" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Kulad" class="control-label"></label>
+                        <input asp-for="Kulad" class="form-control" readonly/>
+                        <span asp-validation-for="Kulad" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Eposta" class="control-label"></label>
+                        <input asp-for="Eposta" class="form-control" />
+                        <span asp-validation-for="Eposta" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="GsmNo" class="control-label"></label>
+                        <input asp-for="GsmNo" class="form-control" />
+                        <span asp-validation-for="GsmNo" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Sifre" class="control-label"></label>
+                        <input asp-for="Sifre" class="form-control" />
+                        <span asp-validation-for="Sifre" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="button" id="btnDuzenleKaydet" value="Kaydet" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/Jquery-SerializeJSON/jquery.serializejson.js"></script>
+
+
+<script type="text/javascript">
+    var webUrl;
+    var kulAd;
+    var sifre;
+
+    $(document).ready(function () {
+        webUrl = '@ViewBag.webUrl';
+        kulAd = "asd";
+        sifre = "asd";
+
+        Kullanici_Bilgiler();
+    });
+
+    function getRowSelections() {
+        return $.map($("#example1").bootstrapTable('getSelections'), function (row) {
+            return row;
+        });
+    }
+
+    $("#btnDuzenle").click(function () {
+        var selectedRows = getRowSelections();
+        $.each(selectedRows, function (index, value) {
+            selectedItems = value.ObjectID;
+        });
+
+        console.log(selectedItems);
+
+        var _url = webUrl + "Kullanici/Kullanici_Getir_Iliskisel"
+        _url += "?kullaniciAd=" + kulAd + "&sifre=" + sifre;
+
+        $.ajax({
+            type: "GET",
+            url: _url,
+            data: { _refID: selectedItems },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: function (result) {
+                console.log(result);
+                $("#ObjectID").val(result.Nesne.ObjectID);
+                $("#RolID").val(result.Nesne.KullaniciRol.ObjectID);
+                $("#RolAd").val(result.Nesne.KullaniciRol.RolAd);
+                $("#TcNo").val(result.Nesne.TcNo);
+                $("#AdSoyad").val(result.Nesne.AdSoyad);
+                $("#Eposta").val(result.Nesne.Eposta);
+                $("#GsmNo").val(result.Nesne.GsmNo);
+                $("#Kulad").val(result.Nesne.Kulad);
+                $("#Sifre").val(result.Nesne.Sifre);
+            },
+            failure: function(er) {
+            }
+        });
+
+    });
+
+    $("#btnDuzenleKaydet").click(function () {
+
+        var _url = webUrl + "Kullanici/Kullanici_Duzelt";
+        _url += "?kullaniciAd=" + kulAd + "&sifre=" + sifre;
+
+        var formData = $("#formDuzenleKisi");
+        var _data = JSON.stringify(formData.serializeJSON());
+
+        console.log(_data);
+        $.ajax({
+            type: 'POST',
+            url: _url,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            data: _data,
+            dataType: 'json',
+            success: function (result) {
+                if (result.Durum) {
+                    toastr.success('Kullanıcı Başarıyla Güncellendi.', 'Başarılı');
+                }
+                else {
+                    toastr.warning('Kullanıcı Güncellenemedi!', 'Uyarı');
+                }
+            },
+
+            failure: function (er) {
+                toastr.alert('Hatalı İşlem!', 'Hata!!!');
+            }
+        });
+        setTimeout(window.location.reload.bind(window.location), 500);
+    });
+
+    $("#btnSil").click(function () {
+        var selectedRows = getRowSelections();
+        $.each(selectedRows, function (index, value) {
+            selectedItems = value.ObjectID;
+        });
+
+        var _url = webUrl + "Kullanici/Kullanici_Sil_Id";
+        _url += "?_refID=" + selectedItems + "&kullaniciAd=" + kulAd + "&sifre=" + sifre;
+
+        $.ajax({
+            type: 'POST',
+            url: _url,
+            dataType: 'json',
+            contentType: 'application/ json; charset = utf - 8',
+            success: function (result) {
+                if (result.Durum) {
+                    toastr.success('Kullanıcı Başarıyla Silindi', 'Başarılı');
+                }
+                else {
+                    toastr.warning('Kullanıcı Silinemedi!', 'Uyarı');
+                }
+            },
+            failure: function (er) {
+                toastr.alert('Hatalı İşlem!', 'Hata!!!');
+            }
+        });
+        setTimeout(window.location.reload.bind(window.location), 500);
+    });
+
+    function Kullanici_Bilgiler() {
+        var _url = webUrl + "Kullanici/Kullanici_Listele_Iliskisel";
+
+        $.ajax({
+            type: 'GET',
+            url: _url,
+            data: { kullaniciAd: kulAd, sifre: sifre },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                if (result != null && result.Durum && result.Liste != null && result.Liste.length > 0) {
+
+                    console.log(result.Liste);
+
+                    $("#example1").bootstrapTable('append', result.Liste);
+                    $("#example1").bootstrapTable({data: result.Liste});
+
+
+                }
+            },
+            failure: function (er) {
+            }
+        });
+    }
+</script>

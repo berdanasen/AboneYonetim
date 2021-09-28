@@ -1,0 +1,177 @@
+﻿@model FATURA
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>FATURA EKLE</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Admin/Fatura/Index">Fatura</a></li>
+                    <li class="breadcrumb-item active">Ekle</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form id="formFatura">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="AboneID">Abone Numarası</label>
+                                <select type="text" asp-for="AboneID" data-live-search="true" data-size="5" class="form-control selectpicker" id="AboneID">
+                                    <option value="0">Seçiniz...</option>
+                                </select>
+                                <span asp-validation-for="AboneID"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="FaturaNo">Fatura Numarası</label>
+                                <input type="text" asp-for="FaturaNo" class="form-control" id="FaturaNo">
+                                <span asp-validation-for="FaturaNo"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="DonemID">Dönemi</label>
+                                <select type="text" asp-for="DonemID" data-live-search="true" data-size="5" class="form-control selectpicker" id="DonemID">
+                                    <option value="0">Seçiniz...</option>
+                                </select>
+                                <span asp-validation-for="DonemID"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="FaturaTutari">Fatura Tutarı</label>
+                                <input type="number" min="0.00" max="10000.00" step="0.01" asp-for="FaturaTutari" class="form-control" id="FaturaTutari">
+                                <span asp-validation-for="FaturaTutari"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="FaturaSonOdemeTarih">Fatura Son Ödeme Tarihi</label>
+                                <input type="date" asp-for="FaturaSonOdemeTarih" class="form-control" id="FaturaSonOdemeTarih">
+                                <span asp-validation-for="FaturaSonOdemeTarih"></span>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button type="button" id="btnKaydet" class="btn btn-primary">Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/lib/jquery/jquery.min.js"></script>
+
+<script type="text/javascript">
+    var webUrl;
+    var kulAd;
+    var sifre;
+
+    $(document).ready(function () {
+        webUrl = '@ViewBag.webUrl';
+        kulAd = '@ViewBag.userName';
+        sifre = '@ViewBag.passWord';
+
+        console.log(webUrl);
+
+        Abone_Doldur();
+        Donem_Doldur();
+    });
+
+    $("#btnKaydet").click(function () {
+        var _url = webUrl + "Fatura/Fatura_Ekle";
+        _url += "?kullaniciAd" + kulAd + "&sifre" + sifre;
+
+        var formData = $("#formFatura");
+        var _data = JSON.stringify(formData.serializeJSON());
+
+        console.log(_data);
+
+        $.ajax({
+            async: false,
+            url: _url,
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: _data,
+            dataType: 'json',
+            success: function (result) {
+                console.log(result.Mesaj);
+                console.log(result.Durum);
+                if (result.Durum) {
+                    toastr.success('Fatura Başarıyla Eklendi', 'Başarılı');
+                }
+                else {
+                    toastr.warning('Fatura Eklenemedi!', 'Uyarı');
+                }
+            },
+            failure: function (er) {
+                toastr.alert('Hatalı İşlem!', 'Hata!!!');
+            }
+        });
+        setTimeout(window.location.reload.bind(window.location), 1000);
+    });
+
+    function Abone_Doldur() {
+        var _url = webUrl + "Abone/Abone_Liste";
+
+        $.ajax({
+            type: 'GET',
+            url: _url,
+            data: { kulAd: kulAd, sifre: sifre },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                if (result != null && result.Durum && result.Liste != null && result.Liste.length > 0) {
+
+                    console.log(result.Liste);
+
+                    for (var j = 0; j < result.Liste.length; j++) {
+                        $('#AboneID').append($('<option>', { value: result.Liste[j]["ObjectID"], text: result.Liste[j]["AboneNo"] }));
+                    }
+                }
+                $('#AboneID').selectpicker('refresh');
+            },
+            failure: function (er) {
+            }
+        });
+    };
+
+    function Donem_Doldur() {
+        var _url = webUrl + "Donem/Donem_Liste";
+
+        $.ajax({
+            type: 'GET',
+            url: _url,
+            data: { kulAd: kulAd, sifre: sifre },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                if (result != null && result.Durum && result.Liste != null && result.Liste.length > 0) {
+
+                    console.log(result.Liste);
+
+                    for (var j = 0; j < result.Liste.length; j++) {
+                        $('#DonemID').append($('<option>', { value: result.Liste[j]["ObjectID"], text: result.Liste[j]["Donem"] }));
+                    }
+                }
+                $('#DonemID').selectpicker('refresh');
+            },
+            failure: function (er) {
+            }
+        });
+    }
+</script>

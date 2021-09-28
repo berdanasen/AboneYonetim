@@ -1,0 +1,151 @@
+﻿@model ABONE
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Abone Ekle</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Admin/Abone/Index">Abone</a></li>
+                    <li class="breadcrumb-item active">Ekle</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form id="formAbone">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="KulID">Abone Kişi</label>
+                                <select type="text" asp-for="KulID" data-live-search="true" data-size="5" class="form-control selectpicker" id="KulID">
+                                    <option value="0">Seçiniz...</option>
+                                </select>
+                                <span asp-validation-for="KulID"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="AboneNo">Abone Numarası</label>
+                                <input type="text" asp-for="AboneNo" class="form-control" id="AboneNo">
+                                <span asp-validation-for="AboneNo"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="adSoyad">Ad Soyad</label>
+                                <input type="text" asp-for="AdSoyad" class="form-control" id="adSoyad">
+                                <span asp-validation-for="AdSoyad"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="TelefonNo">Telefon Numarası</label>
+                                <input type="text" asp-for="TelefonNo" class="form-control" id="TelefonNo">
+                                <span asp-validation-for="TelefonNo"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="Eposta">E-Posta</label>
+                                <input type="email" asp-for="Eposta" class="form-control" id="Eposta">
+                                <span asp-validation-for="Eposta"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="TcKimlikNO">T.C. Kimlik Numarası</label>
+                                <input type="text" asp-for="TcKimlikNO" class="form-control" id="TcKimlikNO">
+                                <span asp-validation-for="TcKimlikNO"></span>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button type="button" id="btnKaydet" class="btn btn-primary">Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/lib/jquery/jquery.min.js"></script>
+
+<script type="text/javascript">
+    var webUrl;
+    var kulAd;
+    var sifre;
+
+    $(document).ready(function () {
+        webUrl = '@ViewBag.webUrl';
+        kulAd = "asd";
+        sifre = "asd";
+
+        Kullanici_Doldur();
+    });
+
+    $("#btnKaydet").click(function () {
+        var _url = webUrl + "Abone/Abone_Ekle";
+        _url += "?kulAd" + kulAd + "&sifre" + sifre;
+
+        var formData = $("#formAbone");
+        var _data = JSON.stringify(formData.serializeJSON());
+
+        console.log(_data);
+
+        $.ajax({
+            async: false,
+            url: _url,
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: _data,
+            dataType: 'json',
+            success: function (result) {
+                if (result.Durum) {
+                    toastr.success('Abone Başarıyla Eklendi.', 'Başarılı');
+                }
+                else {
+                    toastr.warning('Abone eklenemedi!', 'Uyarı');
+                }
+            },
+            failure: function (er) {
+                toastr.warning('Hatalı İşlem!', 'Hata!!!');
+            }
+        });
+        setTimeout(window.location.reload.bind(window.location), 500);
+    });
+
+    function Kullanici_Doldur() {
+        var _url = webUrl + "Kullanici/Kullanici_Listele";
+
+        $.ajax({
+            type: 'GET',
+            url: _url,
+            data: { kullaniciAd: kulAd, sifre: sifre },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                if (result != null && result.Durum && result.Liste != null && result.Liste.length > 0) {
+
+                    console.log(result.Liste);
+
+                    for (var j = 0; j < result.Liste.length; j++) {
+                        if (result.Liste[j]["RolID"] != 1 && result.Liste[j]["RolID"] != null) {
+                            $('#KulID').append($('<option>', { value: result.Liste[j]["ObjectID"], text: result.Liste[j]["Kulad"] }));
+                        }
+                    }
+                }
+                $('#KulID').selectpicker('refresh');
+            },
+            failure: function (er) {
+            }
+        });
+    };
+</script>

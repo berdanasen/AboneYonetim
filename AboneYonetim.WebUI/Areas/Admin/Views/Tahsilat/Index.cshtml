@@ -1,0 +1,255 @@
+﻿@model TAHSILAT
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Tahsilatlar</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Tahsilat</a></li>
+                    <li class="breadcrumb-item active">Index</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- /.card -->
+                <div class="card">
+                    <div class="card-header">
+                        <a class="card-title btn btn-success" type="button" data-toggle="modal" data-target="#exampleModal" id="btnTahsilat">Tahsilat İşlemler </a>
+                    </div>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped" data-search="true" data-search-align="left" data-toggle="table" data-pagination="false" data-sortable="true"
+                               data-single-select="true" data-click-to-select="true" data-sort-class="table-active" data-buttons-class="info">
+                            <thead>
+                                <tr>
+                                    <th data-field="durum" data-checkbox="true"></th>
+                                    <th data-field="Abone.AboneNo">Abone Numarası</th>
+                                    <th data-field="Fatura.FaturaNo">Fatura Numarası</th>
+                                    <th data-field="Donem.Donem">Fatura Dönemi</th>
+                                    <th data-field="TahTarhi">Tahsilat Tarihi</th>
+                                    <th data-field="TahTutar">Tahsilat Tutarı</th>
+                                    <th data-field="Fatura.FaturaOdendiMi">Ödendi Mi?</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tahsilat Ödeme</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formTahsilat">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ObjectID" />
+                    <input type="hidden" asp-for="FaturaID" />
+                    <input type="hidden" asp-for="AboneID" />
+                    <div class="form-group">
+                        <label asp-for="Abone.AboneNo"></label>
+                        <input id="AboneNumara" asp-for="Abone.AboneNo" class="form-control" readonly />
+                        <span asp-validation-for="Abone.AboneNo"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Fatura.FaturaNo" class="control-label"></label>
+                        <input id="FaturaNumara" asp-for="Fatura.FaturaNo" class="form-control" readonly />
+                        <span asp-validation-for="Fatura.FaturaNo" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Donem.Donem" class="control-label"></label>
+                        <input id="FaturaDonemi" asp-for="Donem.Donem" class="form-control" readonly />
+                        <span asp-validation-for="Donem.Donem" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TahTarhi" class="control-label"></label>
+                        <input asp-for="TahTarhi" class="form-control" />
+                        <span asp-validation-for="TahTarhi" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TahTutar" class="control-label"></label>
+                        <input asp-for="TahTutar" class="form-control" />
+                        <span asp-validation-for="TahTutar" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="button" value="Öde" id="btnOde" class="btn btn-primary" />
+                        <input type="button" value="Düzelt" id="btnDuzelt" class="btn btn-warning" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/jquery.min.js"></script>
+
+<script type="text/javascript">
+    var webUrl;
+    var kulAd;
+    var sifre;
+
+    $(document).ready(function () {
+        webUrl = '@ViewBag.webUrl';
+        kulAd = '@ViewBag.userName';
+        sifre = '@ViewBag.passWord';
+
+        Tahsilat_Bilgiler();
+    });
+
+    function getRowSelections() {
+        return $.map($("#example1").bootstrapTable('getSelections'), function (row) {
+            return row;
+        });
+    }
+
+    $("#btnTahsilat").click(function () {
+        var selectedRows = getRowSelections();
+        var selectedItems;
+        $.each(selectedRows, function (index, value) {
+            selectedItems = value.ObjectID;
+        });
+
+        var _url = webUrl + "Tahsilat/Tahsilat_Getir_Iliskisel";
+
+        $.ajax({
+            type: 'GET',
+            url: _url,
+            data: { _refID: selectedItems, kullaniciAd: kulAd, sifre: sifre },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                $("#AboneNumara").val(result.Nesne.Abone.AboneNo);
+                $("#FaturaNumara").val(result.Nesne.Fatura.FaturaNo);
+                $("#FaturaDonemi").val(result.Nesne.Donem.Donem);
+                $("#TahTarhi").val(result.Nesne.TahTarhi);
+                $("#TahTutar").val(result.Nesne.TahTutar);
+                $("#FaturaID").val(result.Nesne.Fatura.ObjectID);
+                $("#AboneID").val(result.Nesne.Abone.ObjectID);
+                $("#ObjectID").val(result.Nesne.ObjectID);
+            },
+            failure: function (er) {
+                toastr.alert('Hatalı İşlem!', 'Hata!!!');
+            }
+        });
+    });
+
+    $("#btnOde").click(function () {
+        var _url = webUrl + "Tahsilat/Tahsilat_Ode";
+        _url += "?kullaniciAd=" + kulAd + "&sifre=" + sifre;
+
+        var formData = $("#formTahsilat");
+        var _data = JSON.stringify(formData.serializeJSON());
+
+        console.log(_data);
+
+        $.ajax({
+            type: 'POST',
+            url: _url,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            data: _data,
+            dataType: 'json',
+            success: function (result) {
+                console.log(result.Mesaj);
+                if (result.Durum) {
+                    toastr.success('Ödeme başarıyla gerçekleşti.', 'Başarılı');
+                }
+                else if (result.Mesaj == "Bu faturanın ödemesi yapılmış.") {
+                    toastr.warning('Bu faturanın tahsilat ödemesi daha önce yapılmış.', 'Uyarı');
+                }
+                else {
+                    toastr.warning('Ödeme gerçekleşemedi.', 'Uyarı');
+                }
+            },
+            failure: function (er) {
+                toastr.alert("Hatalı işlem!", 'Hata!!!');
+            }
+        });
+
+        setTimeout(window.location.reload.bind(window.location), 1500);
+    });
+
+    $("#btnDuzelt").click(function () {
+        var _url = webUrl + "Tahsilat/Tahsilat_Duzenle";
+        _url += "?kullaniciAd=" + kulAd + "&sifre=" + sifre;
+
+        var formData = $("#formTahsilat");
+        var _data = JSON.stringify(formData.serializeJSON());
+
+        console.log(_data);
+
+        $.ajax({
+            type: 'POST',
+            url: _url,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            data: _data,
+            dataType: 'json',
+            success: function (result) {
+                console.log(result.Mesaj);
+                if (result.Durum) {
+                    toastr.success('Ödeme başarıyla gerçekleşti.', 'Başarılı');
+                }
+                else if (result.Mesaj == "Bu faturanın ödemesi yapılmış.") {
+                    toastr.warning('Bu faturanın tahsilat ödemesi daha önce yapılmış.', 'Uyarı');
+                }
+                else {
+                    toastr.warning('Ödeme gerçekleşemedi.', 'Uyarı');
+                }
+            },
+            failure: function (er) {
+                toastr.alert("Hatalı işlem!", 'Hata!!!');
+            }
+        });
+
+        setTimeout(window.location.reload.bind(window.location), 1500);
+    });
+
+    function Tahsilat_Bilgiler() {
+        var _url = webUrl + "Tahsilat/Tahsilat_Listele_Iliskisel";
+
+        $.ajax({
+            type: 'GET',
+            url: _url,
+            data: { kullaniciAd: kulAd, sifre: sifre },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                if (result != null && result.Durum && result.Liste != null && result.Liste.length > 0) {
+
+                    console.log(result.Liste);
+
+                    $("#example1").bootstrapTable('append', result.Liste);
+                    $("#example1").bootstrapTable({ data: result.Liste });
+                }
+            },
+            failure: function (er) {
+                toastr.alert('Tahsilat Listelenirken Hata Meydana Geldi!', 'Hata!!!');
+            }
+        });
+    }
+</script>

@@ -1,0 +1,183 @@
+﻿@model AboneYonetim.Entities.ViewModel.DASHBOARD_VIEW_MODEL
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Dashboard</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Index</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <div class="row">
+                    <canvas id="barchar"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="row">
+                    <canvas id="piechar"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var webUrl;
+    var data = [];
+    var labelArray = [];
+    var valueArray = [];
+
+    var PieLabelArray = [];
+    var PieValueArray = [];
+
+    $(document).ready(function () {
+        webUrl = '@ViewBag.webUrl';
+        BarChart_Doldur();
+        PieChart_Doldur();
+
+        var ctxBar = document.getElementById('barchar').getContext('2d');
+        var barchar = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: labelArray,
+                datasets: [{
+                    label: 'Abonelerin Fatura Sayısı',
+                    data: valueArray,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(195, 226, 85, 0.2)',
+                        'rgba(195, 35, 85, 0.2)',
+                        'rgba(195, 255, 85, 0.2)',
+                        'rgba(195, 186, 85, 0.2)',
+                        'rgba(84, 186, 164, 0.2)',
+
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(195, 226, 85, 0.2)',
+                        'rgba(195, 35, 85, 0.2)',
+                        'rgba(195, 255, 85, 0.2)',
+                        'rgba(195, 186, 85, 0.2)',
+                        'rgba(84, 186, 164, 0.2)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        var ctxPie = document.getElementById('piechar').getContext('2d');
+        var piechar = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: PieLabelArray,
+                datasets: [{
+                    label: 'Abonelerin Fatura Sayısı',
+                    data: PieValueArray,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    });
+
+    function BarChart_Doldur() {
+        var _url = webUrl + "Home/Bar_Chart";
+
+        $.ajax({
+            async: false,
+            url: _url,
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (result) {
+
+                $.each(result, function (i, item) {
+                    labelArray.push(item.Adi);
+                    valueArray.push(item.Deger);
+                });
+                console.log(labelArray);
+                console.log(valueArray);
+            }
+        });
+    }
+
+    function PieChart_Doldur() {
+        var _url = webUrl + "Home/Pie_Chart";
+        $.ajax({
+            async: false,
+            url: _url,
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            success: function (result) {
+                $.each(result, function (i, item) {
+                    PieLabelArray.push(item.Adi);
+                    PieValueArray.push(item.Deger);
+                });
+                console.log(PieLabelArray);
+                console.log(PieValueArray);
+            }
+        });
+    }
+
+</script>

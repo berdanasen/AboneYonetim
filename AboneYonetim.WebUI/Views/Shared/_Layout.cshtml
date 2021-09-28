@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Abone Yönetim</title>
+
+    <link href="~/css/fatura.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+    <link href="~/css/cssLogin.css" rel="stylesheet" />
+
+
+    <link rel="stylesheet" href="~/css/thirdparty.bundle.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <script src="~/js/thirdparty.bundle.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+
+    <script src="~/lib/jquery/jquery.js"></script>
+    <script src="~/lib/popper/popper.js"></script>
+    <script src="~/lib/twitter-bootstrap/js/bootstrap.js"></script>
+    <script src="~/lib/font-awesome/js/all.js"></script>
+    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+</head>
+<body>
+    <nav class="navbar navbar-expand navbar-dark flex-column flex-md-row bg-primary">
+        <a class="navbar-brand mr-0 mr-md-2" href="#" aria-label="EnerjiSA">
+            <img src="~/images/enerjisa-logo-navbar.png" width="30" height="30" class="d-block align-top" alt="" focusable="false" />
+        </a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav bd-navbar-nav flex-row">
+                <li class="nav-item ml-4">
+                    <a class="nav-link active" href="/Fatura/Index">FATURALAR</a>
+                </li>
+                <li class="nav-item ml-2">
+                    <a class="nav-link active" href="/Tahsilat/Index">TAHSILATLAR</a>
+                </li>
+                <li class="nav-item ml-2">
+                    <a class="nav-link active" href="/Home/Logout">CIKIS YAP</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        @RenderBody()
+    </div>
+</body>
+</html>

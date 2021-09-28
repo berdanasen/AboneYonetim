@@ -1,0 +1,121 @@
+﻿@model KULLANICI_ROL
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Rol Ekle</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Admin/KullaniciRol/Index">Kullanıcı Rol</a></li>
+                    <li class="breadcrumb-item active">Index</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form id="formRol">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="RolAd">Rol Adı</label>
+                                <input type="text" asp-for="RolAd" class="form-control" id="TcNo" required>
+                                <span asp-validation-for="RolAd" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button type="button" id="btnKaydet" class="btn btn-primary">Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/lib/jquery/jquery.min.js"></script>
+
+<script type="text/javascript">
+    var webUrl;
+
+    $(document).ready(function () {
+        webUrl = '@ViewBag.webUrl';
+        kulAd = "asd";
+        sifre = "asd";
+
+        Rol_Doldur();
+    });
+
+    $("#btnKaydet").click(function () {
+        var _url = webUrl + "KullaniciRol/Kullanici_Rol_Ekle";
+        _url += "?kullaniciAd" + kulAd + "&sifre" + sifre;
+
+        var formData = $("#formRol");
+        var _data = JSON.stringify(formData.serializeJSON());
+
+        console.log(_data);
+
+        $.ajax({
+            async: false,
+            url: _url,
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: _data,
+            dataType: 'json',
+            success: function (result) {
+                if (result.Durum) {
+                    toastr.success('Rol Başarıyla Eklendi.', 'Başarılı');
+                }
+                else {
+                    toastr.warning('Rol Eklenemedi!', 'Uyarı');
+                }
+            },
+            failure: function (er) {
+                toastr.alert('Hatalı İşlem!', 'Hata!!!');
+            }
+        });
+
+        setTimeout(window.location.reload.bind(window.location), 500);
+    });
+
+    //function Rol_Doldur() {
+    //    var _url = webUrl + "KullaniciRol/Kullanici_Rol_Listele";
+
+    //    $.ajax({
+    //        type: 'GET',
+    //        url: _url,
+    //        data: { kullaniciAd: kulAd, sifre: sifre },
+    //        dataType: 'json',
+    //        contentType: 'application/json; charset=utf-8',
+    //        async: false,
+    //        success: function (result) {
+    //            if (result != null && result.Durum && result.Liste != null && result.Liste.length > 0) {
+
+    //                console.log(result.Liste);
+
+    //                for (var j = 0; j < result.Liste.length; j++) {
+    //                    $('#RolID').append($('<option>', { value: result.Liste[j]["ObjectID"], text: result.Liste[j]["RolAd"] }));
+    //                }
+    //            }
+    //            $('#RolID').selectpicker('refresh');
+    //        },
+    //        failure: function (er) {
+    //        }
+    //    });
+    //};
+</script>

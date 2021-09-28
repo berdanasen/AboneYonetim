@@ -1,0 +1,297 @@
+﻿@model TAHSILAT
+@{
+    ViewData["Title"] = "TAHSILAT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/tab.css" rel="stylesheet" />
+<link href="~/lib/bootstrap-table/bootstrap-table.css" rel="stylesheet" />
+
+<nav class="mt-5">
+    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Bütün Tahsilatlar</a>
+        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Ödenmemiş Tahsilatlar</a>
+        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Ödenmiş Tahsilatlar</a>
+    </div>
+</nav>
+
+<div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <div class="card">
+            <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped" data-search="true" data-search-align="left" data-toggle="table" data-pagination="false" data-sortable="true"
+                       data-single-select="true" data-click-to-select="true" data-sort-class="table-active" data-buttons-class="info">
+                    <thead>
+                        <tr>
+                            @*<th data-field="durum" data-checkbox="true"></th>*@
+                            <th data-field="Abone.AboneNo">Abone Numarası</th>
+                            <th data-field="Fatura.FaturaNo">Fatura Numarası</th>
+                            <th data-field="Donem.Donem">Fatura Dönemi</th>
+                            <th data-field="TahTarhi">Tahsilat Tarihi</th>
+                            <th data-field="TahTutar">Tahsilat Tutarı</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+        <div class="card">
+            <div class="card-header">
+                <a class="card-title btn btn-warning" type="button" data-toggle="modal" data-target="#exampleModal" id="btnTahsilat"><i class="fas fa-dollar-sign"></i> Tahsilatı Öde </a>
+            </div>
+            <div class="card-body">
+                <table id="example2" class="table table-bordered table-striped" data-search="true" data-search-align="left" data-toggle="table" data-pagination="false" data-sortable="true"
+                       data-single-select="true" data-click-to-select="true" data-sort-class="table-active" data-buttons-class="info">
+                    <thead>
+                        <tr>
+                            <th data-field="durum" data-checkbox="true"></th>
+                            <th data-field="Abone.AboneNo">Abone Numarası</th>
+                            <th data-field="Fatura.FaturaNo">Fatura Numarası</th>
+                            <th data-field="Donem.Donem">Fatura Dönemi</th>
+                            <th data-field="TahTarhi">Tahsilat Tarihi</th>
+                            <th data-field="TahTutar">Tahsilat Tutarı</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+        <div class="card">
+            <div class="card-body">
+                <table id="example3" class="table table-bordered table-striped" data-search="true" data-search-align="left" data-toggle="table" data-pagination="false" data-sortable="true"
+                       data-single-select="true" data-click-to-select="true" data-sort-class="table-active" data-buttons-class="info">
+                    <thead>
+                        <tr>
+                            @*<th data-field="durum" data-checkbox="true"></th>*@
+                            <th data-field="Abone.AboneNo">Abone Numarası</th>
+                            <th data-field="Fatura.FaturaNo">Fatura Numarası</th>
+                            <th data-field="Donem.Donem">Fatura Dönemi</th>
+                            <th data-field="TahTarhi">Tahsilat Tarihi</th>
+                            <th data-field="TahTutar">Tahsilat Tutarı</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tahsilat Ödeme</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formKisiTahsilat">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ObjectID" />
+                    <input type="hidden" asp-for="FaturaID" />
+                    <input type="hidden" asp-for="AboneID" />
+                    <input type="hidden" asp-for="DonemID" />
+                    <div class="form-group">
+                        <label asp-for="Abone.AboneNo"></label>
+                        <input id="AboneNumara" asp-for="Abone.AboneNo" class="form-control" readonly />
+                        <span asp-validation-for="Abone.AboneNo"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Fatura.FaturaNo" class="control-label"></label>
+                        <input id="FaturaNumara" asp-for="Fatura.FaturaNo" class="form-control" readonly />
+                        <span asp-validation-for="Fatura.FaturaNo" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Donem.Donem" class="control-label"></label>
+                        <input id="FaturaDonemi" asp-for="Donem.Donem" class="form-control" readonly />
+                        <span asp-validation-for="Donem.Donem" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TahTarhi" class="control-label"></label>
+                        <input asp-for="TahTarhi" class="form-control" readonly />
+                        <span asp-validation-for="TahTarhi" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TahTutar" class="control-label"></label>
+                        <input asp-for="TahTutar" class="form-control" readonly />
+                        <span asp-validation-for="TahTutar" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="button" value="Öde" id="btnOde" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/Jquery-SerializeJSON/jquery.serializejson.js"></script>
+<script src="~/lib/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="~/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+    var webUrl;
+    var kulAd;
+    var sifre;
+
+    $(document).ready(function () {
+        webUrl = '@ViewBag.webUrl';
+        kulAd = '@ViewBag.userName';
+        sifre = '@ViewBag.passWord';
+
+        Kisi_Butun_Tahsilat_Bilgiler();
+        Kisi_Odenmemis_Tahsilat_Bilgiler();
+        Kisi_Odenmis_Tahsilat_Bilgiler();
+    });
+
+    function getRowSelections() {
+        return $.map($("#example2").bootstrapTable('getSelections'), function (row) {
+            return row;
+        });
+    }
+
+    $("#btnTahsilat").click(function () {
+        var selectedRows = getRowSelections();
+        var selectedItems;
+        $.each(selectedRows, function (index, value) {
+            selectedItems = value.ObjectID;
+        });
+
+        console.log(selectedItems);
+
+        var _url = webUrl + "Tahsilat/Tahsilat_Getir_Iliskisel";
+
+        $.ajax({
+            type: 'GET',
+            url: _url,
+            data: { _refID: selectedItems, kullaniciAd: kulAd, sifre: sifre },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                $("#AboneNumara").val(result.Nesne.Abone.AboneNo);
+                $("#FaturaNumara").val(result.Nesne.Fatura.FaturaNo);
+                $("#FaturaDonemi").val(result.Nesne.Donem.Donem);
+                $("#TahTarhi").val(result.Nesne.TahTarhi);
+                $("#TahTutar").val(result.Nesne.TahTutar);
+                $("#FaturaID").val(result.Nesne.Fatura.ObjectID);
+                $("#AboneID").val(result.Nesne.Abone.ObjectID);
+                $("#ObjectID").val(result.Nesne.ObjectID);
+                $("#DonemID").val(result.Nesne.Donem.ObjectID);
+            },
+            failure: function (er) {
+                toastr.alert('Hatalı İşlem!', 'Hata!!!');
+            }
+        });
+    });
+
+    $("#btnOde").click(function () {
+        var _url = webUrl + "Tahsilat/Tahsilat_Ode";
+        _url += "?kullaniciAd=" + kulAd + "&sifre=" + sifre;
+
+        var formData = $("#formKisiTahsilat");
+        var _data = JSON.stringify(formData.serializeJSON());
+
+        console.log(_data);
+
+        $.ajax({
+            type: 'POST',
+            url: _url,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            data: _data,
+            dataType: 'json',
+            success: function (result) {
+                if (result.Durum) {
+                    toastr.success('Ödeme başarıyla gerçekleşti.', 'Başarılı');
+                }
+                else {
+                    toastr.warning('Ödeme gerçekleşemedi.', 'Uyarı');
+                }
+            },
+            failure: function (er) {
+                toastr.alert("Hatalı işlem!", 'Hata!!!');
+            }
+        });
+
+        setTimeout(window.location.reload.bind(window.location), 500);
+    });
+
+    function Kisi_Butun_Tahsilat_Bilgiler() {
+        var _url = webUrl + "Tahsilat/Tahsilat_Kisi_Listele_Iliskisel";
+
+        $.ajax({
+            type: 'GET',
+            url: _url,
+            data: { kullaniciAd: kulAd, sifre: sifre },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                if (result != null && result.Durum && result.Liste != null && result.Liste.length > 0) {
+
+                    console.log(result.Liste);
+
+                    $("#example1").bootstrapTable('append', result.Liste);
+                    $("#example1").bootstrapTable({ data: result.Liste });
+                }
+            },
+            failure: function (er) {
+                toastr.alert('Tahsilat Listelenirken Hata Meydana Geldi!', 'Hata!!!');
+            }
+        });
+    }
+
+    function Kisi_Odenmemis_Tahsilat_Bilgiler() {
+        var _url = webUrl + "Tahsilat/Tahsilat_Kisi_Odenmemis_Listele_Iliskisel";
+
+        $.ajax({
+            type: 'GET',
+            url: _url,
+            data: { kullaniciAd: kulAd, sifre: sifre },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                if (result != null && result.Durum && result.Liste != null && result.Liste.length > 0) {
+
+                    $("#example2").bootstrapTable('append', result.Liste);
+                    $("#example2").bootstrapTable({ data: result.Liste });
+                }
+            },
+            failure: function (er) {
+                toastr.alert('Tahsilat Listelenirken Hata Meydana Geldi!', 'Hata!!!');
+            }
+        });
+    }
+
+    function Kisi_Odenmis_Tahsilat_Bilgiler() {
+        var _url = webUrl + "Tahsilat/Tahsilat_Kisi_Odenmis_Listele_Iliskisel";
+
+        $.ajax({
+            type: 'GET',
+            url: _url,
+            data: { kullaniciAd: kulAd, sifre: sifre },
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                if (result != null && result.Durum && result.Liste != null && result.Liste.length > 0) {
+
+                    $("#example3").bootstrapTable('append', result.Liste);
+                    $("#example3").bootstrapTable({ data: result.Liste });
+                }
+            },
+            failure: function (er) {
+                toastr.alert('Tahsilat Listelenirken Hata Meydana Geldi!', 'Hata!!!');
+            }
+        });
+    }
+</script>

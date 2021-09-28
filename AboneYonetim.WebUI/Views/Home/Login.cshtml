@@ -1,0 +1,133 @@
+﻿@model KULLANICI_LOGIN
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="dvSayfaIcerik">
+    <div class="dvLogin">
+        <div class="dvLoginIcerik">
+            <div class="dvMamakLogo text-center mb-4">
+                <img src="~/images/enerjisalogo.png" />
+            </div>
+            <form id="frmForm" name="frmForm">
+                <div class="form-group">
+
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                        <input type="text" asp-for="KullaniciAd" class="form-control" placeholder="kullanıcı adınız..." />
+
+                    </div>
+
+                    <span asp-validation-for="KullaniciAd" class="text-danger"></span>
+
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        </div>
+                        <input type="password" asp-for="Sifre" class="form-control" placeholder="şifreniz..." />
+                    </div>
+
+                    <span asp-validation-for="Sifre" class="text-danger"></span>
+                </div>
+                <div id="dvHata">
+
+                </div>
+
+
+            </form>
+        </div>
+        <div class="row dvLoginButton ">
+            <div class="p-0 text-right">
+                <button id="btnGiris" type="submit" class="btn btn-info">Giriş</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#btnGiris').click(function () {
+
+            var durum = $('#frmForm').valid();
+
+            if (durum) {
+
+                var url = "/Home/frmLoginPost";
+
+                Form_Gonder(url);
+            }
+
+        });
+
+    });
+
+    function Form_Gonder(_url) {
+
+        $('#dvHata').html("");
+        var snc = "Test";
+
+        var frm = $('#frmForm');
+
+        var dt = frm.serialize();
+
+        $.ajax({
+            async: false,
+            url: _url,
+            data: dt,
+            type: 'POST',
+            //contentType: 'application/json; charset=utf-8',
+            dataTpe: 'json',
+            success: function (sonuc) {
+
+                console.log(sonuc);
+
+                if (sonuc.Durum && sonuc.Nesne != null) {
+
+                    var url;
+
+                    if (sonuc.Nesne.RolID == 1) {
+
+                        url = "/Admin/Dashboard";
+
+                    } else {
+                        url = "/Fatura/Index";
+                    }
+
+
+
+                    window.location.href = url;
+                } else {
+                    $('#dvHata').html("Lütfen bilgilerinizi kontrol ediniz!");
+                }
+
+            },
+            failure: function (er) {
+                console.log("Dönen Hata");
+                console.log(er);
+            }
+        });
+
+        return snc;
+
+    };
+</script>
+<!-- Enter Event -->
+<script>
+    document.addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+            document.getElementById("btnGiris").click();
+        }
+    });
+
+</script>
